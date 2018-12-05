@@ -4,7 +4,7 @@ const Query = {
   items: forwardTo('db'),
   item: forwardTo('db'),
   itemsConnection: forwardTo('db'),
-  me(parent, args, ctx, ingo) {
+  me(parent, args, ctx, info) {
     let user = null;
 
     if (ctx.request.userId) {

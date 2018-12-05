@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const MAX_AGE = 1000 * 60 * 60 * 24 * 365, // 1 year cookie
+const MAX_AGE = 1000 * 60 * 60 * 24 * 365; // 1 year cookie
 
 
 const mutations = {
@@ -69,12 +69,19 @@ const mutations = {
       throw new Error (`Invalid Paasword!`);
     }
 
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+
     ctx.response.cookie('token', token, {
       httpOnly: true,
       maxAge: MAX_AGE,
     });
 
     return user;
+  },
+
+  signout(parent, args, ctx, info) {
+    ctx.response.clearCookie('token');
+    return { message: 'Goodbye!' };
   }
 };
 
