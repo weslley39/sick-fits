@@ -9,10 +9,16 @@ const MAX_AGE = 1000 * 60 * 60 * 24 * 365; // 1 year cookie
 
 const mutations = {
   async createItem(parent, args, ctx, info) {
-    // TODO Check if user is logged in
+    if (!ctx.request.userId) throw new Erro('You must be logged in to do that');
+
     const item = await ctx.db.mutation.createItem(
       {
         data: {
+          user: {
+            connect: {
+              id: ctx.request.userId
+            }
+          },
           ...args,
         },
       },
