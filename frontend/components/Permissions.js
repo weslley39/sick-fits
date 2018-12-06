@@ -13,7 +13,7 @@ const possiblePermissions = [
   'PERMISSIONUPDATE',
 ];
 
-const ALL_USER_QUERY = gql`
+const ALL_USERS_QUERY = gql`
   query {
     users {
       id
@@ -25,9 +25,9 @@ const ALL_USER_QUERY = gql`
 `;
 
 const Permissions = props => (
-  <Query query={ALL_USER_QUERY}>
+  <Query query={ALL_USERS_QUERY}>
     {
-      ({ data, loading, error }) => {
+      ({ data, loading, error }) => (
         <div>
           <Error error={error} />
           <div>
@@ -51,7 +51,7 @@ const Permissions = props => (
             </Table>
           </div>
         </div>
-      }
+      )
     }
   </Query>
 );
@@ -80,3 +80,5 @@ class User extends React.Component {
     )
   }
 }
+
+export default Permissions;
