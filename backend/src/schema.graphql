@@ -1,6 +1,6 @@
 # import * from './generated/prisma.graphql'
 
-type SucessMessage {
+type SuccessMessage {
   message: String
 }
 
@@ -10,7 +10,7 @@ type Mutation {
   deleteItem(id: ID!): Item
   signup(email: String!, password: String!, name: String!): User!
   signin(email: String!, password: String!): User!
-  signout: SucessMessage
+  signout: SuccessMessage
   requestReset(email: String!): SuccessMessage
   resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
 }

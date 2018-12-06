@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { randomBytes } = require('crypto');
+const { promisify } = require('util');
+const { transport, makeANiceEmail } = require('../mail');
 
 const MAX_AGE = 1000 * 60 * 60 * 24 * 365; // 1 year cookie
 
@@ -85,12 +88,10 @@ const mutations = {
   },
 
   async requestReset(parent, args, ctx, info) {
-    // 1. Check if this is a real user
     const user = await ctx.db.query.user({ where: { email: args.email } });
-    if (!user) {
-      throw new Error(`No such user found for email ${args.email}`);
-    }
-    // 2. Set a reset token and expiry on that user
+
+    if (!user) throw new Error(`No such user found for email ${args.email}`);
+
     const randomBytesPromiseified = promisify(randomBytes);
     const resetToken = (await randomBytesPromiseified(20)).toString('hex');
     const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
@@ -98,9 +99,19 @@ const mutations = {
       where: { email: args.email },
       data: { resetToken, resetTokenExpiry },
     });
-    console.log(res);
+
+    const mailRes = await transport.sendMail({
+      from: 'wes@wesbos.com',
+      to: user.email,
+      subject: 'Your Password Reset Token',
+      html: makeANiceEmail(`Your Password Reset Token is here!
+      \n\n
+      <a href="${process.env
+        .FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
+    });
+
+
     return { message: 'Thanks!' };
-    // 3. Email them that reset token
   },
   async resetPassword(parent, { password, confirmPassword, resetToken }, ctx, info) {
     if (password !== confirmPassword) throw new Error("Yo Passwords don't match!");
@@ -112,11 +123,11 @@ const mutations = {
     });
     if (!user) throw new Error('This token is either invalid or expired!');
 
-    const password = await bcrypt.hash(password, 10);
+    const newPassword = await bcrypt.hash(password, 10);
     const updatedUser = await ctx.db.mutation.updateUser({
       where: { email: user.email },
       data: {
-        password,
+        password: newPassword,
         resetToken: null,
         resetTokenExpiry: null,
       },
