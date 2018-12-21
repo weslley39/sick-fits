@@ -207,7 +207,7 @@ const mutations = {
     return ctx.db.mutation.createCartItem({
       data: {
         user: {
-          connect: { id: user },
+          connect: { id: userId },
         },
         item: {
           connect: { id: args.id },
