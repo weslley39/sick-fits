@@ -10,7 +10,7 @@ import AddToCart from './AddToCart';
 
 
 export default class Item extends Component {
-  static PropTypes = {
+  static propTypes = {
     item: PropTypes.object.isRequired,
   };
 
