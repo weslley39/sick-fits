@@ -10,3 +10,4 @@ const OrderPage = props => (
 );
 
 export default OrderPage;
+export { SINGLE_ORDER_QUERY };
