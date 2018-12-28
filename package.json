@@ -8,7 +8,7 @@
     "build": "npx next build",
     "start": "npx next build && npx next start -p $PORT",
     "test": "NODE_ENV=test jest --watch",
-    "test-win": "SET NODE_ENV=test&& jest --watch",
+    "test-win": "SET NODE_ENV=test&& jest --watch"
   },
   "author": "",
   "license": "ISC",
